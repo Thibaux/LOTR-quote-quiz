@@ -1,5 +1,7 @@
 # Lord of the Rings Quote Quiz
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bff767be-f169-4484-9776-4741ad42fdd6/deploy-status)](https://app.netlify.com/sites/quote-quiz/deploys)
+
 A lord of the rings quote quiz. The user choses how many rounds that want to play.
 The user has to guess the character. The quotes and character are fetched form the one API.
 
