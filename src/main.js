@@ -1,5 +1,5 @@
 import {
-	createApp
+    createApp
 } from 'vue'
 import App from './App.vue'
 import './index.css'

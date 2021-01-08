@@ -6,15 +6,14 @@
         </quiz>
         <div class="footer">
             <div class="name">&#169; Thibaux Swildens</div>
-            <!-- <div class="links">
-    <div class="github">
-        <div class="bg git"></div>
-    </div>
-    <div class="linkedin">
-        <div class="bg linked"></div>
-    </div>
-</div>
- -->
+            <div class="links">
+                <div class="github">
+                    <div class="bg git"></div>
+                </div>
+                <div class="linkedin">
+                    <div class="bg linked"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -61,16 +60,14 @@ body {
     flex-direction: column;
     justify-content: center;
     height: 98vh;
-    padding-bottom: 2vh;
 }
 
 
 /* BG img */
-
 .bg-hero {
     position: absolute;
     top: 0;
-    height: 40vh;
+    height: 30vh;
     width: 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -131,13 +128,19 @@ body {
 
 @media screen and (max-width: 960px) {
     .bg {
-        height: 30vh;
+        height: 25vh;
     }
 }
 
 @media screen and (max-width: 640px) {
     .bg {
         height: 25vh;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .Main {
+        height: auto;
     }
 }
 </style>

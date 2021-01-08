@@ -13,28 +13,59 @@
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
                 <div class="modal inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                        <div class="sm:flex sm:item-start">
+                            <div class="rTitle mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="w-full text-lg leading-6 font-medium text-gray-900" id="modal-headline">
                                     Results: {{ score }} correct | {{ wrong }} wrong | {{ percentage }}%
                                 </h3>
                                 <div class="result">
-                                    <div class="yourAns">
-                                        <ul type="A" v-for="answer in answers" :key="answer.id">
-                                            <li>{{ answer }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="correct">
-                                        <ul v-for="char in characters" :key="char.index">
-                                            <li>{{ char }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="resultsQuotes">
-                                        <ul v-for="q in resultsQuotes" :key="q.index">
-                                            <li>
-                                                <p>{{ q.dialog }}</p>
-                                            </li>
-                                        </ul>
+                                    <div class="table">
+                                        <div class="mx-auto">
+                                            <div class="bg-gray-200 shadow-md rounded my-6">
+                                                <table class="text-left w-full border-collapse">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-black"></th>
+                                                            <th v-for="(i, index) in result[0]" class="px-1 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-black">{{ index+1 }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="hover:bg-gray-100">
+                                                            <td class="py-4 px-1 border-b border-black">
+                                                                <h2>
+                                                                    Your guess
+                                                                </h2>
+                                                            </td>
+                                                            <td class="py-4 border-b border-black" v-for="i in result[0]">
+                                                                {{ i }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="py-4 px-1 border-b border-black">
+                                                                <h2>
+                                                                    Character
+                                                                </h2>
+                                                            </td>
+                                                            <td class="py-4 border-b border-black" v-for="i in result[1]">
+                                                                {{ i }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="py-4 px-1 border-b">
+                                                                <h2>
+                                                                    Quote
+                                                                </h2>
+                                                            </td>
+                                                            <td class="py-4 border-b" v-for="i in result[2]">
+                                                                <p>
+                                                                    {{ i }}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -54,8 +85,8 @@
             </div>
         </div>
         <!-- Input -->
-        <div class="container inputCon max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl">
-            <div class="md:flex">
+        <div class="container inputCon max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? '15rem' : ''}">
+            <div class="inputConA md:flex">
                 <div class="p-8">
                     <!-- SETUP -->
                     <button class="startBtn" @click="startQuiz" v-show="!quizActive">
@@ -73,7 +104,7 @@
                             </div>
                         </div>
                         <div class="skip">
-                            <button @click="skipQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button @click="nextQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 <p class="playAgain">Skip</p>
                                 <span class="skipIcon">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -87,7 +118,7 @@
             </div>
         </div>
         <!-- Quote -->
-        <div class="container quote max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl">
+        <div class="container quote max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? 'auto' : ''}">
             <!-- SETUP -->
             <div v-show="!quizActive" class="rules">
                 <h3>Rules</h3>
@@ -135,7 +166,7 @@ export default {
     data() {
         return {
             showErr: false,
-            rounds: 5,
+            rounds: 1,
             quote: {},
             quotes: {},
             randNum: 0,
@@ -155,9 +186,12 @@ export default {
             id: 1,
             wrong: 0,
             percentage: 0,
+            result: [],
+            quotesA: [],
         }
     },
     methods: {
+
         // Rounds button
         increment() {
             this.rounds++;
@@ -169,10 +203,10 @@ export default {
 
         // Star quiz
         startQuiz() {
-            this.randQuote()
             this.fetchQuotes()
-            if (Math.sign(this.rounds) == 1) {
+            if (Math.sign(this.rounds) == 1 && this.rounds <= 6) {
                 this.quizActive = true;
+                this.randQuote()
             } else if (Math.sign(this.rounds) == -1) {
                 this.quizActive = false;
             }
@@ -199,7 +233,8 @@ export default {
         // Set response
         setQuote() {
             this.quote = this.quotes.docs[this.randNum]
-            this.resultsQuotes.push(this.quote)
+            // this.resultsQuotes.push(this.quote)
+            this.quotesA.push(this.quote.dialog)
             // this.fetchQuoteMovie() 
             this.fetchQuoteChar()
         },
@@ -231,6 +266,7 @@ export default {
         // Check answer
         checkChar() {
             let quoteC = this.quoteChar.toLowerCase()
+            // let quoteC = "frodo baggins"
             let charAns = this.CharacterAns.toLowerCase()
 
             let arrOfCharName = quoteC.split(" ");
@@ -238,19 +274,24 @@ export default {
 
             if (firstName == charAns || quoteC == charAns) {
                 this.score = +1
+                console.log("goed")
                 this.nextQuote()
             } else {
+                console.log("wrong")
                 this.nextQuote()
             }
 
-            this.answers.push(this.CharacterAns);
-            this.characters.push(this.quoteChar);
-
-            this.CharacterAns = '';
         },
 
         // Show next quote
         nextQuote() {
+            this.answers.push(this.CharacterAns);
+            this.characters.push(this.quoteChar);
+
+            this.result.push(this.answers);
+            this.result.push(this.characters);
+            this.result.push(this.quotesA);
+
             this.timesCalled++;
             if (this.timesCalled == this.rounds) {
                 setTimeout(this.endQuiz, 500);
@@ -258,12 +299,6 @@ export default {
                 this.randQuote()
                 this.setQuote()
             }
-        },
-
-        // Skip qoute
-        skipQuote() {
-            this.randQuote()
-            this.setQuote()
 
             this.CharacterAns = '';
         },
@@ -291,8 +326,6 @@ export default {
     position: relative;
     justify-content: space-around;
     align-items: center;
-    margin-top: 40vh;
-    padding-bottom: 5vh;
 }
 
 .Quiz h3 {
@@ -328,8 +361,6 @@ export default {
     display: flex;
     flex-direction: row;
     color: #333333;
-    width: 100%;
-    height: 100%;
 }
 
 .yourAns {
@@ -337,7 +368,6 @@ export default {
     flex-direction: column;
     padding-right: 2rem;
     margin-left: 2rem;
-    word-wrap: break-word;
 }
 
 .correct {
@@ -348,6 +378,15 @@ export default {
 
 .resultsQuotes p {
     font-size: 14px;
+}
+
+.result h2 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.result p {
+    word-wrap: break-word;
 }
 
 /* INPUT FIELD */
@@ -376,6 +415,7 @@ export default {
     width: auto;
     height: auto;
 }
+
 
 .info {
     display: flex;
@@ -500,12 +540,19 @@ export default {
     color: #333333;
 }
 
+.inputCon {
+    display: flex;
+    justify-content: center;
+}
+
+.quote {
+    margin-top: 2rem;
+}
 
 @media screen and (max-width: 1024px) {
     .modal {
         width: 80vw;
     }
-
 }
 
 @media screen and (max-width: 960px) {
@@ -516,8 +563,9 @@ export default {
     }
 
     .inputCon {
-        margin-bottom: 3rem;
+        margin-top: 2rem;
     }
+
 }
 
 @media screen and (max-width: 640px) {
@@ -525,7 +573,6 @@ export default {
         margin-top: 5vh;
         flex-direction: column;
         height: 75%;
-        /*padding: 0;*/
     }
 
     .modal {
@@ -534,6 +581,11 @@ export default {
 
     .result {
         flex-direction: column;
+        font-size: 10px;
+    }
+
+    .result h2 {
+        font-size: 12px;
     }
 
     .result div {
@@ -559,11 +611,33 @@ export default {
     }
 
     .container {
-        height: 100vh;
+        height: auto;
+    }
+
+    .rTitle h3 {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .inputCon {
+        height: 7rem;
+    }
+
+    .startBtn {
+        padding: 0;
     }
 
     .quote {
-        height: 100vh;
+        height: 20rem;
+    }
+
+    .result {
+        font-size: 6px;
+    }
+
+    .result h2 {
+        font-size: 8px;
     }
 }
 </style>
