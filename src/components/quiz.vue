@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <div class="skip">
-                            <button @click="nextQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button @click="skipQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 <p class="playAgain">Skip</p>
                                 <span class="skipIcon">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -166,7 +166,7 @@ export default {
     data() {
         return {
             showErr: false,
-            rounds: 1,
+            rounds: 3,
             quote: {},
             quotes: {},
             randNum: 0,
@@ -233,8 +233,6 @@ export default {
         // Set response
         setQuote() {
             this.quote = this.quotes.docs[this.randNum]
-            // this.resultsQuotes.push(this.quote)
-            this.quotesA.push(this.quote.dialog)
             // this.fetchQuoteMovie() 
             this.fetchQuoteChar()
         },
@@ -287,6 +285,7 @@ export default {
         nextQuote() {
             this.answers.push(this.CharacterAns);
             this.characters.push(this.quoteChar);
+            this.quotesA.push(this.quote.dialog)
 
             this.result.push(this.answers);
             this.result.push(this.characters);
@@ -300,6 +299,13 @@ export default {
                 this.setQuote()
             }
 
+            this.CharacterAns = '';
+        },
+
+        // Skip quote
+        skipQuote() {
+            this.randQuote()
+            this.setQuote()
             this.CharacterAns = '';
         },
 

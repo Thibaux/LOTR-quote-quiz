@@ -6,14 +6,6 @@
         </quiz>
         <div class="footer">
             <div class="name">&#169; Thibaux Swildens</div>
-            <div class="links">
-                <div class="github">
-                    <div class="bg git"></div>
-                </div>
-                <div class="linkedin">
-                    <div class="bg linked"></div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
