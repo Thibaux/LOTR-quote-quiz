@@ -271,11 +271,9 @@ export default {
             let firstName = arrOfCharName[0]
 
             if (firstName == charAns || quoteC == charAns) {
-                this.score = +1
-                console.log("goed")
+                this.score = this.score + 1
                 this.nextQuote()
             } else {
-                console.log("wrong")
                 this.nextQuote()
             }
 
