@@ -18,7 +18,7 @@ The user has to guess the character. The quotes and character are fetched form t
 TODO
 
 - Film for a half pont
-- Tribe of a character for a half pont?
+- Race of a character for a half pont?
 
 ## Project setup
 ```

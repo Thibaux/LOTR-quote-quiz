@@ -1,5 +1,5 @@
 <template>
-    <div class="Quiz">
+    <div class="Quiz h-screen">
         <div v-show="showErr">
             <h3>Sorry there was a problem with the API!</h3>
             <br>
@@ -11,8 +11,8 @@
                     <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
                 </div>
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="modal inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="modal w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                    <div class="bg-white w-auto px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:item-start">
                             <div class="rTitle mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <h3 class="w-full text-lg leading-6 font-medium text-gray-900" id="modal-headline">
@@ -33,30 +33,54 @@
                                                         <tr class="hover:bg-gray-100">
                                                             <td class="py-4 px-1 border-b border-black">
                                                                 <h2>
-                                                                    Your guess
+                                                                    Your character
                                                                 </h2>
                                                             </td>
-                                                            <td class="py-4 border-b border-black" v-for="i in result[0]">
+                                                            <td class="py-4 px-2 border-b border-black" v-for="i in result[0]">
                                                                 {{ i }}
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        <tr class="hover:bg-gray-100">
                                                             <td class="py-4 px-1 border-b border-black">
                                                                 <h2>
                                                                     Character
                                                                 </h2>
                                                             </td>
-                                                            <td class="py-4 border-b border-black" v-for="i in result[1]">
+                                                            <td class="px-2 py-4 border-b border-black" v-for="i in result[1]">
                                                                 {{ i }}
                                                             </td>
                                                         </tr>
-                                                        <tr>
-                                                            <td class="py-4 px-1 border-b">
+                                                        <tr class="hover:bg-gray-100">
+                                                            <td class="py-4 px-1 border-b border-black">
                                                                 <h2>
                                                                     Quote
                                                                 </h2>
                                                             </td>
-                                                            <td class="py-4 border-b" v-for="i in result[2]">
+                                                            <td class="px-2 py-4 border-b border-black" v-for="i in result[2]">
+                                                                <p>
+                                                                    {{ i }}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="hover:bg-gray-100">
+                                                            <td class="py-4 px-1 border-b border-black">
+                                                                <h2>
+                                                                    Your film
+                                                                </h2>
+                                                            </td>
+                                                            <td class="px-2 py-4 border-b border-black" v-for="i in result[3]">
+                                                                <p>
+                                                                    {{ i }}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="hover:bg-gray-100">
+                                                            <td class="py-4 px-1 border-b">
+                                                                <h2>
+                                                                    Film
+                                                                </h2>
+                                                            </td>
+                                                            <td class="px-2 py-4 border-b" v-for="i in result[4]">
                                                                 <p>
                                                                     {{ i }}
                                                                 </p>
@@ -85,40 +109,47 @@
             </div>
         </div>
         <!-- Input -->
-        <div class="container inputCon max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? '15rem' : ''}">
-            <div class="inputConA md:flex">
-                <div class="p-8">
-                    <!-- SETUP -->
-                    <button class="startBtn" @click="startQuiz" v-show="!quizActive">
-                        <h2 class="font-black">START QUOTE QUIZ</h2>
-                    </button>
-                    <!-- QUIZ -->
-                    <div v-show="quizActive" class="quizActive uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                        <h3>Answer</h3>
-                        <div class="ans mt-1 relative rounded-md">
-                            <input type="text" v-on:keyup.enter="checkChar" v-model="CharacterAns" class=" focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="character...">
-                            <div class="absolute inset-y-0 right-0 flex items-center">
-                                <div class="absolute inset-y-0 right-2 pl-3 flex items-center">
-                                    <button @click="checkChar" class="check rounded-r-md text-gray-500 sm:text-sm">Check</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="skip">
-                            <button @click="skipQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                <p class="playAgain">Skip</p>
-                                <span class="skipIcon">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                            </button>
-                        </div>
+        <div class="container inputCon h-auto max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? 'h-auto' : ''}">
+            <div class="md:flex p-8 h-full">
+                <!-- <div class=" "> -->
+                <!-- SETUP -->
+                <button class="startBtn" @click="startQuiz" v-show="!quizActive">
+                    <h2 class="font-black">START QUOTE QUIZ</h2>
+                </button>
+                <!-- QUIZ -->
+                <div v-show="quizActive" class="quizActive uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                    <h3>Answer</h3>
+                    <form class="mt-2">
+                        <!-- Character answer -->
+                        <input v-model="CharacterAns" placeholder="   character..." autocomplete="email" class="rounded-md block w-full py-3 px-1 mt-2 
+                    text-gray-800 appearance-none 
+                    border-b-2 border-gray-100
+                    focus:text-gray-500 focus:outline-none focus:border-gray-200" required />
+                        <!-- Film answer -->
+                        <input v-model="FilmAns" placeholder="   film..." autocomplete="current-password" class="rounded-md block w-full py-3 px-1 mt-2 mb-4
+                    text-gray-800 appearance-none 
+                    border-b-2 border-gray-100
+                    focus:text-gray-500 focus:outline-none focus:border-gray-200" required />
+                        <button @click="checkAnswers" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-900 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <p class="playAgain">Check</p>
+                        </button>
+                    </form>
+                    <div class="skip">
+                        <button @click="skipQuote" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 sm:ml-3 sm:w-auto sm:text-sm">
+                            <p class="playAgain">Skip</p>
+                            <span class="skipIcon">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                        </button>
                     </div>
+                    <!-- </div> -->
                 </div>
             </div>
         </div>
         <!-- Quote -->
-        <div class="container quote max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? 'auto' : ''}">
+        <div class="container quote h-auto max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? 'auto' : ''}">
             <!-- SETUP -->
             <div v-show="!quizActive" class="rules">
                 <h3>Rules</h3>
@@ -128,12 +159,12 @@
                 </ul>
                 <div class="rounds">
                     <h4>Rounds</h4>
-                    <div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
-                        <button @click="decrement" class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none">
+                    <div class="flex flex-row h-auto w-full rounded-lg relative bg-transparent mt-1">
+                        <button @click="decrement" class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-auto w-20 rounded-l cursor-pointer outline-none">
                             <span class="m-auto text-2xl font-thin">−</span>
                         </button>
                         <input type="number" class="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none" name="custom-input-number" v-model="rounds">
-                        <button @click="increment" class="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">
+                        <button @click="increment" class="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-auto w-20 rounded-r cursor-pointer">
                             <span v class="m-auto text-2xl font-thin">+</span>
                         </button>
                     </div>
@@ -174,15 +205,18 @@ export default {
             max: 1000,
             quoteMovie: '',
             quoteChar: '',
+            quoteFilm: '',
             quizActive: false,
             character: '',
             CharacterAns: '',
+            FilmAns: '',
             score: 0,
             timesCalled: 0,
             end_quiz: false,
             answers: [],
             characters: [],
-            resultsQuotes: [],
+            filmAnsers: [],
+            films: [],
             id: 1,
             wrong: 0,
             percentage: 0,
@@ -233,7 +267,7 @@ export default {
         // Set response
         setQuote() {
             this.quote = this.quotes.docs[this.randNum]
-            // this.fetchQuoteMovie() 
+            this.fetchQuoteMovie()
             this.fetchQuoteChar()
         },
 
@@ -241,7 +275,9 @@ export default {
         fetchQuoteMovie() {
             HTTP.get(`/movie/${this.quote.movie}`)
                 .then(response => {
-                    this.quoteMovie = response.data
+                    this.res = response.data
+                    this.quoteFilm = this.res.docs[0].name
+                    console.log(this.quoteFilm)
                 })
                 .catch(error => {
                     console.log(error)
@@ -261,10 +297,37 @@ export default {
                 })
         },
 
-        // Check answer
+        // Function to call the nessecery checks
+        checkAnswers() {
+            // this.checkChar()
+            // this.checkFilm()
+
+            let quoteC = this.quoteChar.toLowerCase()
+            let charAns = this.CharacterAns.toLowerCase()
+
+            let quoteF = this.quoteFilm.toLowerCase()
+            let filmAns = this.FilmAns.toLowerCase()
+
+            let arrOfCharName = quoteC.split(" ");
+            let firstName = arrOfCharName[0]
+
+            if (firstName == charAns || quoteC == charAns && quoteF == filmAns) {
+                this.score = this.score + 1.5
+                this.nextQuote()
+            } else if (firstName == charAns || quoteC == charAns) {
+                this.score = this.score + 1
+                this.nextQuote()
+            } else if (quoteF == filmAns) {
+                this.score = this.score + 0.5
+                this.nextQuote()
+            } else {
+                this.nextQuote()
+            }
+        },
+
+        // Check character
         checkChar() {
             let quoteC = this.quoteChar.toLowerCase()
-            // let quoteC = "frodo baggins"
             let charAns = this.CharacterAns.toLowerCase()
 
             let arrOfCharName = quoteC.split(" ");
@@ -276,18 +339,43 @@ export default {
             } else {
                 this.nextQuote()
             }
-
         },
+
+        // Check film
+        checkFilm() {
+            let quoteC = this.quoteFilm.toLowerCase()
+            let filmAns = this.FilmAns.toLowerCase()
+
+            if (quoteC == filmAns) {
+                this.score = this.score + 0.5
+                this.nextQuote()
+            } else {
+                this.nextQuote()
+            }
+        },
+
+
 
         // Show next quote
         nextQuote() {
+            // User's answers
             this.answers.push(this.CharacterAns);
+            this.filmAnsers.push(this.FilmAns);
+
+            // Correct values
             this.characters.push(this.quoteChar);
             this.quotesA.push(this.quote.dialog)
+            this.films.push(this.quoteFilm)
 
+            console.log(this.quote.dialog)
+            console.log(this.quotesA)
+
+            // Push everything into a results array so it is better handelt in the template
             this.result.push(this.answers);
             this.result.push(this.characters);
             this.result.push(this.quotesA);
+            this.result.push(this.filmAnsers);
+            this.result.push(this.films);
 
             this.timesCalled++;
             if (this.timesCalled == this.rounds) {
@@ -298,6 +386,7 @@ export default {
             }
 
             this.CharacterAns = '';
+            this.FilmAns = '';
         },
 
         // Skip quote
@@ -305,6 +394,7 @@ export default {
             this.randQuote()
             this.setQuote()
             this.CharacterAns = '';
+            this.FilmAns = '';
         },
 
         // End quiz
@@ -312,6 +402,8 @@ export default {
             this.percentage = Math.round(this.score / this.rounds * 100);
             this.wrong = this.rounds - this.score;
             this.end_quiz = true
+            console.log(this.score)
+            console.log(this.result)
         },
 
         // Funcition to load the quiz again
@@ -417,7 +509,6 @@ export default {
 .container {
     background-color: #EEEEEE;
     width: auto;
-    height: auto;
 }
 
 
@@ -499,6 +590,7 @@ export default {
 .quizActive h3 {
     font-size: 18px;
     font-weight: 600;
+
 }
 
 .rules {
@@ -614,26 +706,14 @@ export default {
         font-size: 20px;
     }
 
-    .container {
-        height: auto;
-    }
-
     .rTitle h3 {
         font-size: 14px;
     }
 }
 
 @media screen and (max-width: 340px) {
-    .inputCon {
-        height: 7rem;
-    }
-
     .startBtn {
         padding: 0;
-    }
-
-    .quote {
-        height: 20rem;
     }
 
     .result {
