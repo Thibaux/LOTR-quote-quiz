@@ -16,7 +16,7 @@
                         <div class="sm:flex sm:item-start">
                             <div class="rTitle mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <h3 class="w-full text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                    Results: {{ score }} correct | {{ wrong }} wrong | {{ percentage }}%
+                                    Results: {{ score }} correct | {{ percentage }}%
                                 </h3>
                                 <div class="result">
                                     <div class="table">
@@ -311,6 +311,17 @@ export default {
             let arrOfCharName = quoteC.split(" ");
             let firstName = arrOfCharName[0]
 
+
+
+
+
+
+
+
+
+
+
+            // FIX
             if (firstName == charAns || quoteC == charAns && quoteF == filmAns) {
                 this.score = this.score + 1.5
                 this.nextQuote()
@@ -367,9 +378,6 @@ export default {
             this.quotesA.push(this.quote.dialog)
             this.films.push(this.quoteFilm)
 
-            console.log(this.quote.dialog)
-            console.log(this.quotesA)
-
             // Push everything into a results array so it is better handelt in the template
             this.result.push(this.answers);
             this.result.push(this.characters);
@@ -399,11 +407,17 @@ export default {
 
         // End quiz
         endQuiz() {
-            this.percentage = Math.round(this.score / this.rounds * 100);
-            this.wrong = this.rounds - this.score;
-            this.end_quiz = true
+            let per = Math.round(this.score / this.rounds * 100);
+
             console.log(this.score)
-            console.log(this.result)
+
+            if (per >= 101) {
+                this.percentage = 100
+            } else if (per < 100) {
+                this.percentage = per
+            }
+
+            this.end_quiz = true
         },
 
         // Funcition to load the quiz again
