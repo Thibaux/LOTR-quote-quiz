@@ -63,18 +63,6 @@
                                                             </td>
                                                         </tr>
                                                         <tr class="hover:bg-gray-100">
-                                                            <td class="py-4 px-1 border-b border-black">
-                                                                <h2>
-                                                                    Your film
-                                                                </h2>
-                                                            </td>
-                                                            <td class="px-2 py-4 border-b border-black" v-for="i in result[3]">
-                                                                <p>
-                                                                    {{ i }}
-                                                                </p>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="hover:bg-gray-100">
                                                             <td class="py-4 px-1 border-b">
                                                                 <h2>
                                                                     Film
@@ -109,24 +97,50 @@
             </div>
         </div>
         <!-- Input -->
-        <div class="container inputCon h-auto max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" :style="{height: quizActive ? 'h-auto' : ''}">
+        <div class="container inputCon h-auto max-w-md mx-auto bg-white rounded-none sm:rounded-lg shadow-md overflow-hidden md:max-w-2xl" v-bind:class="{'inputConNotActive': !quizActive}">
             <div class="md:flex p-8 h-full">
                 <!-- <div class=" "> -->
                 <!-- SETUP -->
                 <button class="startBtn" @click="startQuiz" v-show="!quizActive">
-                    <h2 class="font-black">START QUOTE QUIZ</h2>
+                    <h1 class="font-black">START</h1>
                 </button>
                 <!-- QUIZ -->
                 <div v-show="quizActive" class="quizActive uppercase tracking-wide text-sm text-indigo-500 font-semibold">
                     <h3>Answer</h3>
+                    <!-- Film -->
                     <form class="mt-2">
-                        <!-- Character answer -->
-                        <input v-model="CharacterAns" placeholder="   character..." autocomplete="email" class="rounded-md block w-full py-3 px-1 mt-2 
-                    text-gray-800 appearance-none 
-                    border-b-2 border-gray-100
-                    focus:text-gray-500 focus:outline-none focus:border-gray-200" required />
                         <!-- Film answer -->
-                        <input v-model="FilmAns" placeholder="   film..." autocomplete="current-password" class="rounded-md block w-full py-3 px-1 mt-2 mb-4
+                        <div class="flex pb-4 flex-wrap w-full sm:w-6/12 md:w-4/12 px-4">
+                            <div class="inline-flex">
+                                <button class="filmBtn text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 bg-gray-500" style="transition:all .15s ease font-normal px-6 py-2 rounded outline-none focus:outline-none mr-1 mb-1 capitalize w-full" type="button" v-on:click="toggleDropdown()" ref="btnDropdownRef">
+                                    <p class="">{{ optionChosen }} </p>
+                                    <span class="">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <div v-bind:class="{'hidden': !dropdownPopoverShow, 'block': dropdownPopoverShow}" class="dropdown bg-gray-500 text-base float-left py-2 list-none text-left rounded shadow-lg mt-1" style="min-width:12rem" ref="popoverDropdownRef">
+                                    <a @click="film" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white">
+                                        Choose a film
+                                    </a>
+                                    <div class="h-0 my-2 border border-solid border-t-0 border-gray-900 opacity-25"></div>
+                                    <a @click="film1" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white">
+                                        The Fellowship of the ring
+                                    </a>
+                                    <div class="h-0 my-2 border border-solid border-t-0 border-gray-900 opacity-25"></div>
+                                    <a @click="film2" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white">
+                                        The Two Towers
+                                    </a>
+                                    <div class="h-0 my-2 border border-solid border-t-0 border-gray-900 opacity-25"></div>
+                                    <a @click="film3" class="text-sm py-2 px-4 font-normal block w-full whitespace-no-wrap bg-transparent text-white">
+                                        The Return Of The King
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Character answer -->
+                        <input v-model="CharacterAns" placeholder="character..." autocomplete="email" class="answer mb-8 rounded-md block w-full py-3 px-1 mt-2 
                     text-gray-800 appearance-none 
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200" required />
@@ -154,8 +168,10 @@
             <div v-show="!quizActive" class="rules">
                 <h3>Rules</h3>
                 <ul>
-                    <li>Guess the name of the character that said the quote!</li>
-                    <li>For every character that you guessed correctly you will earn 1 point</li>
+                    <li>Guess the name of the character &amp; <br> in which film the qoute was said!</li>
+                    <br>
+                    <li>Character: 1 point</li>
+                    <li>Film: 0.5 point</li>
                 </ul>
                 <div class="rounds">
                     <h4>Rounds</h4>
@@ -191,13 +207,14 @@
 </template>
 <script>
 import { HTTP } from './../../http-common';
+import Popper from "popper.js";
 
 export default {
     name: 'quiz',
     data() {
         return {
             showErr: false,
-            rounds: 3,
+            rounds: 1,
             quote: {},
             quotes: {},
             randNum: 0,
@@ -222,6 +239,10 @@ export default {
             percentage: 0,
             result: [],
             quotesA: [],
+            dropdownPopoverShow: false,
+            optionChosen: 'Film',
+            dropdownActive: false,
+            filmCorrect: false,
         }
     },
     methods: {
@@ -234,12 +255,11 @@ export default {
             this.rounds--;
         },
 
-
-        // Star quiz
+        // Start quiz
         startQuiz() {
-            this.fetchQuotes()
             if (Math.sign(this.rounds) == 1 && this.rounds <= 6) {
                 this.quizActive = true;
+                this.fetchQuotes()
                 this.randQuote()
             } else if (Math.sign(this.rounds) == -1) {
                 this.quizActive = false;
@@ -297,73 +317,127 @@ export default {
                 })
         },
 
+        // Open dropdown
+        toggleDropdown: function() {
+            if (this.dropdownPopoverShow) {
+                this.dropdownPopoverShow = false;
+            } else {
+                this.dropdownPopoverShow = true;
+                new Popper(this.$refs.btnDropdownRef, this.$refs.popoverDropdownRef, {
+                    placement: "bottom-start"
+                });
+            }
+        },
+
+        // Process films
+        film() {
+            this.optionChosen = "Choose a film"
+        },
+
+        film1() {
+            this.optionChosen = "The Fellowship of the Ring"
+            if (this.optionChosen == this.quoteFilm) {
+                this.filmCorrect = true
+                console.log("correct")
+            }
+        },
+
+        film2() {
+            this.optionChosen = "The two towers"
+            if (this.optionChosen == this.quoteFilm) {
+                this.filmCorrect = true
+                console.log("correct")
+            }
+        },
+
+        film3() {
+            this.optionChosen = "The return of the king"
+            if (this.optionChosen == this.quoteFilm) {
+                this.filmCorrect = true
+                console.log("correct")
+            }
+        },
+
+
         // Function to call the nessecery checks
         checkAnswers() {
             // this.checkChar()
             // this.checkFilm()
 
             let quoteC = this.quoteChar.toLowerCase()
+            // let quoteC = "thiss"
             let charAns = this.CharacterAns.toLowerCase()
 
-            let quoteF = this.quoteFilm.toLowerCase()
-            let filmAns = this.FilmAns.toLowerCase()
+            // let quoteF = this.quoteFilm.toLowerCase()
+            // let filmAns = this.FilmAns.toLowerCase()
 
             let arrOfCharName = quoteC.split(" ");
             let firstName = arrOfCharName[0]
 
 
+            // FIX
+            if (this.filmCorrect == true && (firstName == charAns) || (quoteC == charAns)) {
+                console.log("deze")
+                this.score = this.score + 1.5
+                console.log(this.score)
+                this.nextQuote()
+            } else if (this.filmCorrect == true) {
+                console.log("alles")
+                this.score = this.score + 0.5
+                console.log(this.score)
+                this.nextQuote()
+            } else if (firstName == charAns || quoteC == charAns) {
+                console.log("alldsfes")
+                this.score = this.score + 1
+                console.log(this.score)
+                this.nextQuote()
+            } else {
+                this.nextQuote()
 
-
-
-
-
-
+            }
 
 
 
             // FIX
-            if (firstName == charAns || quoteC == charAns && quoteF == filmAns) {
-                this.score = this.score + 1.5
-                this.nextQuote()
-            } else if (firstName == charAns || quoteC == charAns) {
-                this.score = this.score + 1
-                this.nextQuote()
-            } else if (quoteF == filmAns) {
-                this.score = this.score + 0.5
-                this.nextQuote()
-            } else {
-                this.nextQuote()
-            }
+            // if (firstName == charAns || quoteC == charAns) {
+            // this.score = this.score + 1
+            // }
+            // if (this.filmCorrect == true) {
+            // this.score = this.score + 0.5
+            // }
+
+            // this.nextQuote()
+
         },
 
-        // Check character
-        checkChar() {
-            let quoteC = this.quoteChar.toLowerCase()
-            let charAns = this.CharacterAns.toLowerCase()
+        // // Check character
+        // checkChar() {
+        //     let quoteC = this.quoteChar.toLowerCase()
+        //     let charAns = this.CharacterAns.toLowerCase()
 
-            let arrOfCharName = quoteC.split(" ");
-            let firstName = arrOfCharName[0]
+        //     let arrOfCharName = quoteC.split(" ");
+        //     let firstName = arrOfCharName[0]
 
-            if (firstName == charAns || quoteC == charAns) {
-                this.score = this.score + 1
-                this.nextQuote()
-            } else {
-                this.nextQuote()
-            }
-        },
+        //     if (firstName == charAns || quoteC == charAns) {
+        //         this.score = this.score + 1
+        //         this.nextQuote()
+        //     } else {
+        //         this.nextQuote()
+        //     }
+        // },
 
-        // Check film
-        checkFilm() {
-            let quoteC = this.quoteFilm.toLowerCase()
-            let filmAns = this.FilmAns.toLowerCase()
+        // // Check film
+        // checkFilm() {
+        //     let quoteC = this.quoteFilm.toLowerCase()
+        //     let filmAns = this.FilmAns.toLowerCase()
 
-            if (quoteC == filmAns) {
-                this.score = this.score + 0.5
-                this.nextQuote()
-            } else {
-                this.nextQuote()
-            }
-        },
+        //     if (quoteC == filmAns) {
+        //         this.score = this.score + 0.5
+        //         this.nextQuote()
+        //     } else {
+        //         this.nextQuote()
+        //     }
+        // },
 
 
 
@@ -394,7 +468,7 @@ export default {
             }
 
             this.CharacterAns = '';
-            this.FilmAns = '';
+            // this.FilmAns = '';
         },
 
         // Skip quote
@@ -407,15 +481,15 @@ export default {
 
         // End quiz
         endQuiz() {
-            let per = Math.round(this.score / this.rounds * 100);
 
-            console.log(this.score)
+            let subtotal = this.rounds * 0.5
+            let total = this.rounds + subtotal;
 
-            if (per >= 101) {
-                this.percentage = 100
-            } else if (per < 100) {
-                this.percentage = per
-            }
+            let score = this.score;
+
+            // Calculate percentage
+            let percentAsDecimal = (100 / score);
+            this.percentage = percentAsDecimal * total;
 
             this.end_quiz = true
         },
@@ -520,6 +594,29 @@ export default {
     transition: all 1s;
 }
 
+.filmBtn {
+    width: 18rem;
+    display: flex;
+    flex-direction: row;
+    height: 2.5rem;
+    justify-content: space-between;
+}
+
+.filmBtn p {
+    margin-top: -0.1rem;
+    margin-left: -0.5rem;
+}
+
+.filmBtn span {
+    margin-right: -0.8rem;
+    margin-top: -0.2rem;
+    margin-left: -1rem;
+}
+
+.dropdown a {
+    cursor: pointer;
+}
+
 .container {
     background-color: #EEEEEE;
     width: auto;
@@ -537,11 +634,10 @@ export default {
     padding: 1rem;
 }
 
-.startBtn h2 {
+.startBtn h1 {
     color: #333333;
-    font-size: 28px;
+    font-size: 38px;
     font-weight: 900;
-    padding: 1rem;
 }
 
 .startBtn:after,
@@ -563,7 +659,7 @@ export default {
 }
 
 .startBtn,
-.startBtn h2 {
+.startBtn h1 {
     transition: all 1s;
 }
 
@@ -579,7 +675,7 @@ export default {
     background-color: #333333;
 }
 
-.startBtn:hover h2 {
+.startBtn:hover h1 {
     color: #f2f2f2;
 }
 
@@ -605,6 +701,11 @@ export default {
     font-size: 18px;
     font-weight: 600;
 
+}
+
+
+.answer {
+    padding-left: 1rem;
 }
 
 .rules {
@@ -653,6 +754,12 @@ export default {
 .inputCon {
     display: flex;
     justify-content: center;
+    height: 23rem;
+    position: relative;
+}
+
+.inputConNotActive {
+    height: 10rem;
 }
 
 .quote {

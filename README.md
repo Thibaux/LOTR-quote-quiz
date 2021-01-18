@@ -17,7 +17,6 @@ The user has to guess the character. The quotes and character are fetched form t
 
 TODO
 
-- Film for a half pont
 - Race of a character for a half pont?
 
 ## Project setup
@@ -42,10 +41,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
-
-A Lord of the rings site which shows info about the universe.
-Data about the books, films and other interesting stuff. 
-Some data is fetched from The one API.
-
