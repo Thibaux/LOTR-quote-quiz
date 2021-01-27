@@ -51,29 +51,29 @@
                                                             </td>
                                                         </tr>
                                                         <tr class="hover:bg-gray-100">
-                                                            <td class="py-4 px-1 border-b border-black">
+                                                            <td class="py-4 px-1 border-b">
                                                                 <h2>
                                                                     Quote
                                                                 </h2>
                                                             </td>
-                                                            <td class="px-2 py-4 border-b border-black" v-for="i in result[2]">
+                                                            <td class="px-2 py-4 border-b" v-for="i in result[2]">
                                                                 <p>
                                                                     {{ i }}
                                                                 </p>
                                                             </td>
                                                         </tr>
-                                                        <tr class="hover:bg-gray-100">
-                                                            <td class="py-4 px-1 border-b">
-                                                                <h2>
-                                                                    Film
-                                                                </h2>
-                                                            </td>
-                                                            <td class="px-2 py-4 border-b" v-for="i in result[4]">
-                                                                <p>
-                                                                    {{ i }}
-                                                                </p>
-                                                            </td>
-                                                        </tr>
+                                                        <!-- <tr class="hover:bg-gray-100">
+    <td class="py-4 px-1 border-b">
+        <h2>
+            Film
+        </h2>
+    </td>
+    <td class="px-2 py-4 border-b" v-for="i in result[4]">
+        <p>
+            {{ i }}
+        </p>
+    </td>
+</tr> -->
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -110,7 +110,7 @@
                     <!-- Film -->
                     <form class="mt-2">
                         <!-- Film answer -->
-                        <div class="flex pb-4 flex-wrap w-full sm:w-6/12 md:w-4/12 px-4">
+                        <!--  <div class="flex pb-4 flex-wrap w-full sm:w-6/12 md:w-4/12 px-4">
                             <div class="inline-flex">
                                 <button class="filmBtn text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 bg-gray-500" style="transition:all .15s ease font-normal px-6 py-2 rounded outline-none focus:outline-none mr-1 mb-1 capitalize w-full" type="button" v-on:click="toggleDropdown()" ref="btnDropdownRef">
                                     <p class="">{{ optionChosen }} </p>
@@ -137,8 +137,8 @@
                                         The Return Of The King
                                     </a>
                                 </div>
-                            </div>
-                        </div>
+                            </div> -->
+                        <!-- </div> -->
                         <!-- Character answer -->
                         <input v-model="CharacterAns" placeholder="character..." autocomplete="email" class="answer mb-8 rounded-md block w-full py-3 px-1 mt-2 
                     text-gray-800 appearance-none 
@@ -168,10 +168,8 @@
             <div v-show="!quizActive" class="rules">
                 <h3>Rules</h3>
                 <ul>
-                    <li>Guess the name of the character &amp; <br> in which film the qoute was said!</li>
-                    <br>
+                    <li>Guess the name of the character</li>
                     <li>Character: 1 point</li>
-                    <li>Film: 0.5 point</li>
                 </ul>
                 <div class="rounds">
                     <h4>Rounds</h4>
@@ -214,7 +212,7 @@ export default {
     data() {
         return {
             showErr: false,
-            rounds: 1,
+            rounds: 3,
             quote: {},
             quotes: {},
             randNum: 0,
@@ -365,48 +363,43 @@ export default {
             // this.checkFilm()
 
             let quoteC = this.quoteChar.toLowerCase()
-            // let quoteC = "thiss"
             let charAns = this.CharacterAns.toLowerCase()
-
-            // let quoteF = this.quoteFilm.toLowerCase()
-            // let filmAns = this.FilmAns.toLowerCase()
 
             let arrOfCharName = quoteC.split(" ");
             let firstName = arrOfCharName[0]
 
 
-            // FIX
-            if (this.filmCorrect == true && (firstName == charAns) || (quoteC == charAns)) {
-                console.log("deze")
-                this.score = this.score + 1.5
-                console.log(this.score)
-                this.nextQuote()
-            } else if (this.filmCorrect == true) {
-                console.log("alles")
-                this.score = this.score + 0.5
-                console.log(this.score)
-                this.nextQuote()
-            } else if (firstName == charAns || quoteC == charAns) {
-                console.log("alldsfes")
+            // Check answers
+            // if (this.filmCorrect == true && (this.firstName == charAns || quoteC == charAns)) {
+            //     this.score = this.score + 1.5
+            //     console.log('character & film goed')
+            //     console.log(this.score)
+            //     this.nextQuote()
+            // } else if (firstName == charAns || quoteC == charAns) {
+            //     this.score = this.score + 1
+            //     console.log('character goed')
+            //     console.log(this.score)
+            //     this.nextQuote()
+            // } else if (this.filmCorrect == true) {
+            //     this.score = this.score + 0.5
+            //     console.log('film goed')
+            //     console.log(this.score)
+            //     this.nextQuote()
+            // } else {
+            //     console.log('niets goed')
+            //     this.nextQuote()
+            // }
+
+
+            if (firstName == charAns || quoteC == charAns) {
                 this.score = this.score + 1
+                console.log('character goed')
                 console.log(this.score)
                 this.nextQuote()
             } else {
+                console.log('niets goed')
                 this.nextQuote()
-
             }
-
-
-
-            // FIX
-            // if (firstName == charAns || quoteC == charAns) {
-            // this.score = this.score + 1
-            // }
-            // if (this.filmCorrect == true) {
-            // this.score = this.score + 0.5
-            // }
-
-            // this.nextQuote()
 
         },
 
@@ -468,7 +461,6 @@ export default {
             }
 
             this.CharacterAns = '';
-            // this.FilmAns = '';
         },
 
         // Skip quote
@@ -482,14 +474,16 @@ export default {
         // End quiz
         endQuiz() {
 
-            let subtotal = this.rounds * 0.5
-            let total = this.rounds + subtotal;
-
+            let total = this.rounds;
             let score = this.score;
 
+            console.log(total)
+            console.log(score)
+
             // Calculate percentage
-            let percentAsDecimal = (100 / score);
-            this.percentage = percentAsDecimal * total;
+            this.percentage = score / total * 100;
+
+            console.log(this.percentage)
 
             this.end_quiz = true
         },
@@ -620,6 +614,7 @@ export default {
 .container {
     background-color: #EEEEEE;
     width: auto;
+    /*height: auto;*/
 }
 
 
@@ -754,12 +749,13 @@ export default {
 .inputCon {
     display: flex;
     justify-content: center;
-    height: 23rem;
+    height: auto;
     position: relative;
+    min-height: 23rem;
 }
 
 .inputConNotActive {
-    height: 10rem;
+    min-height: 10rem;
 }
 
 .quote {
